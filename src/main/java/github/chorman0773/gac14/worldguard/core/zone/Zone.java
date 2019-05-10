@@ -3,16 +3,21 @@ package github.chorman0773.gac14.worldguard.core.zone;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.logging.log4j.core.util.UuidUtil;
 
 import github.chorman0773.gac14.Gac14Core;
 import github.chorman0773.gac14.Version;
+import github.chorman0773.gac14.server.DataEvent;
 import github.chorman0773.gac14.worldguard.core.permission.IPrincipal;
 import github.chorman0773.gac14.worldguard.core.permission.PermissionEntry;
 import github.chorman0773.gac14.worldguard.core.permission.WorldguardRegistries;
@@ -24,10 +29,13 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+
+@Mod.EventBusSubscriber
 public class Zone {
 	private Chunk affectedChunk;
-	private World world;
 	private List<PermissionEntry> permissionEntries;
 	private IPrincipal owner;
 	private UUID zoneId;
@@ -118,9 +126,45 @@ public class Zone {
 	public void delete() {
 		zones.put(this.affectedChunk, null);
 		this.affectedChunk = null;
+		synchronized(chunksToDeleteLock) {
+			chunksToDelete.add(this.zoneId);
+		}
 	}
 	
+	private static final Object chunksToDeleteLock = new Object();
+	private static final Set<UUID> chunksToDelete = new TreeSet<>();
+	
 	private static final Map<Chunk,Zone> zones = new HashMap<>();
+	
+	private static final Gac14Core core = Gac14Core.getInstance();
+	@SubscribeEvent
+	public static void loadChunks(DataEvent.Load load) throws IOException {
+		Path root = core.getStoragePath("gac14:worldguard/zones");
+		for(Path p:Files.newDirectoryStream(root)) {
+			if(Files.isRegularFile(p)) 
+				try(DataInputStream din = new DataInputStream(Files.newInputStream(p))) {
+					new Zone(din);
+				}
+		}
+	}
+	
+	@SubscribeEvent
+	public static void saveChunks(DataEvent.Save save) throws IOException{
+		List<UUID> chunksToDelete;
+		synchronized(chunksToDeleteLock) {
+			chunksToDelete = new ArrayList<>(Zone.chunksToDelete);
+			Zone.chunksToDelete.clear();
+		}
+		Path root = core.getStoragePath("gac14:worldguard/zones");
+		for(Zone z:zones.values()) {
+			Path saveTo = root.resolve(z.zoneId+".wgz");
+			try(DataOutputStream strm = new DataOutputStream(Files.newOutputStream(saveTo))){
+				z.save(strm);
+			}
+		}
+		for(UUID id:chunksToDelete)
+			Files.deleteIfExists(root.resolve(id+".wgz"));
+	}
 	
 	public static Zone getZoneForPosition(ChunkPos pos,World w) {
 		return zones.get(w.getChunk(pos.x,pos.z));

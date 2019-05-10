@@ -4,9 +4,13 @@ import java.io.DataInputStream;
 import java.io.IOException;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 
+@Mod.EventBusSubscriber
 public final class WorldguardRegistries {
 
 	public static final IForgeRegistry<IPrincipalProvider> PrincipalProviders;
@@ -37,5 +41,15 @@ public final class WorldguardRegistries {
 		IPrincipalProvider provider = WorldguardRegistries.PrincipalProviders.getValue(loc);
 		return provider.load(strm);
 	}
+	
+	@SubscribeEvent
+	public static void addRegistries(RegistryEvent.NewRegistry registry) {
+	}
+	
+	@SubscribeEvent
+	public static void registerPrincipals(RegistryEvent.Register<IPrincipalProvider> register) {
+		PrincipalProviders.register(new UserPrincipalProvider());
+	}
+	
 	
 }
