@@ -1,5 +1,9 @@
 package github.chorman0773.gac14.worldguard.core.permission;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 
@@ -17,6 +21,21 @@ public final class WorldguardRegistries {
 				.setType(IWorldguardPermission.class)
 				.set((name,_dummy)->new UnresolvedPermission(name))
 				.create();
+	}
+	
+	public static IPrincipal resolve(String name) {
+		IPrincipal ret = null;
+		for(IPrincipalProvider provider:PrincipalProviders)
+			if((ret = provider.resolve(name))!=null)
+				return ret;
+		return null;
+	}
+	
+	public static IPrincipal readPrincipal(DataInputStream strm) throws IOException {
+		String ptype = strm.readUTF();
+		ResourceLocation loc = ResourceLocation.makeResourceLocation(ptype);
+		IPrincipalProvider provider = WorldguardRegistries.PrincipalProviders.getValue(loc);
+		return provider.load(strm);
 	}
 	
 }

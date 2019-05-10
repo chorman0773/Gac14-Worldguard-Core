@@ -31,16 +31,8 @@ public class Rule {
 		if(!isDefault) {
 			int pcount = strm.readUnsignedShort();
 			principals = new ArrayList<>();
-			for(int i = 0;i<pcount;i++) {
-				String ptype = strm.readUTF();
-				ResourceLocation loc = ResourceLocation.makeResourceLocation(ptype);
-				 IPrincipalProvider provider = WorldguardRegistries.PrincipalProviders.getValue(loc);
-				 int bytes = strm.readUnsignedShort();
-				 if(provider==null)
-					 strm.skipBytes(bytes);
-				 else
-					 principals.add(provider.load(strm));
-			}
+			for(int i = 0;i<pcount;i++)
+				principals.add(WorldguardRegistries.readPrincipal(strm));
 		}
 	}
 	
