@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.Event;
@@ -82,6 +83,13 @@ public class Rule {
 			for(IPrincipal principal:principals)
 				principal.store(strm);
 		}
+	}
+
+	public boolean matches(UUID player) {
+		for(IPrincipal principal:principals)
+			if(principal.matches(player))
+				return true;
+		return false;
 	}
 	
 
