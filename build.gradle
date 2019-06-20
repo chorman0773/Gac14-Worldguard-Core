@@ -12,9 +12,10 @@ apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 
+
 version = '1.0'
 group = 'github.chorman0773.gac14' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'gac14-base'
+archivesBaseName = 'gac14-worldguard-core'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -42,7 +43,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                'gac14-worldguard-core' {
                     source sourceSets.main
                 }
             }
@@ -58,12 +59,19 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                'gac14-worldugard-core' {
                     source sourceSets.main
                 }
             }
         }
     }
+}
+
+repositories{
+	maven {
+		name = "CurseForge"
+		url = "https://minecraft.curseforge.com/api/maven/"
+	}
 }
 
 dependencies {
@@ -75,7 +83,7 @@ dependencies {
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
     // compile "some.group:artifact:version"
-
+	compile "gac14-core:gac14:core:1.2"
     // Real examples
     // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     // compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
