@@ -19,10 +19,12 @@ public final class WorldguardRegistries {
 	static {
 		PrincipalProviders = new RegistryBuilder<IPrincipalProvider>()
 				.setType(IPrincipalProvider.class)
+				.setName(ResourceLocation.makeResourceLocation("gac14:worldguard/principals"))
 				.set((name,_dummy)->new UnresolvedPrincipalProvider(name))
 				.create();
 		Permissions = new RegistryBuilder<IWorldguardPermission>()
 				.setType(IWorldguardPermission.class)
+				.setName(ResourceLocation.makeResourceLocation("gac14:worldguard/permissions"))
 				.set((name,_dummy)->new UnresolvedPermission(name))
 				.create();
 	}
