@@ -38,7 +38,7 @@ Core Worldguard API
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[25,)" #mandatory
+    versionRange="[27,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
@@ -47,11 +47,11 @@ Core Worldguard API
 [[dependencies.gac14-worldguard-core]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.13.2]"
+    versionRange="[1.14.3]"
     ordering="NONE"
     side="BOTH"
 [[dependencies.gac14-worldguard-core]]
 	modId="gac14-core"
 	mandatory=true
-	versionRange="[1.2]"
+	versionRange="[1.3]"
 	side="BOTH"

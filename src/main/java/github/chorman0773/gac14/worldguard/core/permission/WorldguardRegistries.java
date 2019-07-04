@@ -19,13 +19,15 @@ public final class WorldguardRegistries {
 	static {
 		PrincipalProviders = new RegistryBuilder<IPrincipalProvider>()
 				.setType(IPrincipalProvider.class)
-				.setName(ResourceLocation.makeResourceLocation("gac14:worldguard/principals"))
+				.setName(new ResourceLocation("gac14:worldguard/principals"))
 				.set((name,_dummy)->new UnresolvedPrincipalProvider(name))
+				.disableSync()
 				.create();
 		Permissions = new RegistryBuilder<IWorldguardPermission>()
 				.setType(IWorldguardPermission.class)
-				.setName(ResourceLocation.makeResourceLocation("gac14:worldguard/permissions"))
+				.setName(new ResourceLocation("gac14:worldguard/permissions"))
 				.set((name,_dummy)->new UnresolvedPermission(name))
+				.disableSync()
 				.create();
 	}
 	
@@ -39,7 +41,7 @@ public final class WorldguardRegistries {
 	
 	public static IPrincipal readPrincipal(DataInputStream strm) throws IOException {
 		String ptype = strm.readUTF();
-		ResourceLocation loc = ResourceLocation.makeResourceLocation(ptype);
+		ResourceLocation loc = new ResourceLocation(ptype);
 		IPrincipalProvider provider = WorldguardRegistries.PrincipalProviders.getValue(loc);
 		return provider.load(strm);
 	}

@@ -25,7 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
@@ -56,7 +56,7 @@ public class Zone {
 		this(affectedChunk,permissions,owner,"gac14:worldguard/core");
 	}
 	public Zone(Chunk affectedChunk,List<PermissionEntry> permissions,IPrincipal owner,String origin) {
-		this(affectedChunk,permissions,owner,new TextComponentString(""),new TextComponentString(""),origin);
+		this(affectedChunk,permissions,owner,new StringTextComponent(""),new StringTextComponent(""),origin);
 	}
 	
 	public Zone(Chunk affectedChunk,List<PermissionEntry> permissions,ITextComponent title,ITextComponent subtitle) {
@@ -75,7 +75,7 @@ public class Zone {
 		this.zoneId = UuidUtil.getTimeBasedUuid();
 		this.title = title;
 		this.subtitle = subtitle;
-		this.origin = ResourceLocation.makeResourceLocation(origin);
+		this.origin = new ResourceLocation(origin);
 		if(zones.putIfAbsent(this.affectedChunk, this)!=null)
 			throw new IllegalArgumentException("Chunk Already Exists");
 	}
@@ -93,8 +93,8 @@ public class Zone {
 		this.title = ITextComponent.Serializer.fromJson(titleStr);
 		titleStr = strm.readUTF();
 		this.title = ITextComponent.Serializer.fromJson(titleStr);
-		this.origin = ResourceLocation.makeResourceLocation(strm.readUTF());
-		World w = Gac14Core.getInstance().getServer().getWorld(DimensionType.byName(ResourceLocation.makeResourceLocation(strm.readUTF())));
+		this.origin = new ResourceLocation(strm.readUTF());
+		World w = Gac14Core.getInstance().getServer().getWorld(DimensionType.byName(new ResourceLocation(strm.readUTF())));
 		this.affectedChunk = w.getChunk(strm.readInt(), strm.readInt());
 		int pcount = strm.readUnsignedShort();
 		this.permissionEntries = new ArrayList<>();
@@ -115,8 +115,8 @@ public class Zone {
 		strm.writeUTF(origin.toString());
 		World w = affectedChunk.getWorld();
 		strm.writeUTF(w.getDimension().getType().getRegistryName().toString());
-		strm.writeInt(affectedChunk.x);
-		strm.writeInt(affectedChunk.z);
+		strm.writeInt(affectedChunk.getPos().x);
+		strm.writeInt(affectedChunk.getPos().z);
 		strm.writeShort(this.permissionEntries.size());
 		for(PermissionEntry entry:permissionEntries)
 			entry.save(strm);

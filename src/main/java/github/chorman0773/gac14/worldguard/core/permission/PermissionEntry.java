@@ -28,7 +28,7 @@ public class PermissionEntry {
 	public PermissionEntry(DataInputStream strm) throws IOException {
 		String[] str = strm.readUTF().split(";");
 		checks = str[1];
-		ResourceLocation loc = ResourceLocation.makeResourceLocation(str[0]);
+		ResourceLocation loc = new ResourceLocation(str[0]);
 		permission = WorldguardRegistries.Permissions.getValue(loc);
 		int numRules = strm.readUnsignedShort();
 		rules = new ArrayList<>();

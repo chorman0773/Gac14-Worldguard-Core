@@ -15,7 +15,7 @@ public final class UserPrincipalProvider implements IPrincipalProvider {
 	public UserPrincipalProvider() {
 		// TODO Auto-generated constructor stub
 	}
-	private static final ResourceLocation name = ResourceLocation.makeResourceLocation("gac14:worldguard/player");
+	private static final ResourceLocation name = new ResourceLocation("gac14:worldguard/player");
 
 	@Override
 	public ResourceLocation getProviderName() {
@@ -34,6 +34,8 @@ public final class UserPrincipalProvider implements IPrincipalProvider {
 
 	@Override
 	public int store(IPrincipal principal, DataOutputStream strm) throws IOException {
+		strm.writeUTF(name.toString());
+		strm.writeShort(16);
 		UUID id = ((PlayerPrincipal)principal).getId();
 		strm.writeLong(id.getMostSignificantBits());
 		strm.writeLong(id.getLeastSignificantBits());

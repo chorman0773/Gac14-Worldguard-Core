@@ -13,7 +13,7 @@ public final class WorldGuardModule extends Gac14Module<WorldGuardModule> {
 	@Override
 	public ResourceLocation getModuleName() {
 		// TODO Auto-generated method stub
-		return ResourceLocation.makeResourceLocation("gac14:worldguard/core");
+		return new ResourceLocation("gac14:worldguard/core");
 	}
 
 	@Override

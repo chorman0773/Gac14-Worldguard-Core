@@ -16,7 +16,7 @@ public class UnresolvedPrincipalProvider implements IPrincipalProvider {
 	@Override
 	public ResourceLocation getProviderName() {
 		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 
 	@Override
@@ -29,9 +29,12 @@ public class UnresolvedPrincipalProvider implements IPrincipalProvider {
 
 	@Override
 	public int store(IPrincipal principal, DataOutputStream strm) throws IOException {
+		strm.writeUTF(name.toString());
 		UnresolvedPrincipal unresolved = (UnresolvedPrincipal)principal;
-		strm.write(unresolved.getBytes());
-		return unresolved.getBytes().length;
+		byte[] bytes = unresolved.getBytes();
+		strm.writeShort(bytes.length);
+		strm.write(bytes);
+		return bytes.length;
 	}
 
 	@Override
